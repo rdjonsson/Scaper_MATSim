@@ -20,13 +20,12 @@
         <!-- Defines which mobility simulation will be used. Currently supported: qsim JDEQSim
         Depending on the chosen mobsim, you'll have to add additional config modules to configure the corresponding mobsim.
         For 'qsim', add a module 'qsim' to the config. -->
-        <param name="routingAlgorithmType" value= "SpeedyALT" />   <!--changed-->
-
+        <param name="routingAlgorithmType" value= "Dijkstra" />   <!--changed-->
         <param name="mobsim" value="qsim"/>
         <param name="overwriteFiles" value="deleteDirectoryIfExists"/>
         <param name="outputDirectory" value="./output"/>
         <param name="firstIteration" value="1"/>
-        <param name="lastIteration" value="50"/> <!-- original value 100 -->
+        <param name="lastIteration" value="60"/> <!-- original value 100 -->
     </module>
 
     <module name="plans">
@@ -39,13 +38,14 @@
             <param name="immutableModes" value="car:h, bike:h"/>
             <!-- Defines how routes are stored in memory. Currently supported: LinkNetworkRoute, CompressedNetworkRoute. -->
             <param name="networkRouteType" value="LinkNetworkRoute"/>
+            <param name="activityDurationInterpretation" value="tryEndTimeThenDuration"/>   <!-- endTimeOnly -->
         </parameterset>
     </module>
 
     <module name="replanning">
         <param name="maxAgentPlanMemorySize" value="5"/> <!-- 0 means unlimited -->
         <param name="fractionOfIterationsToDisableInnovation"
-               value="1"/>    <!-- 0.3 is good --> <!-- fraction of iterations where innovative strategies are switched off. if you set it to 0.8 and run from iteration 400 to iteration 500, innovation is switched off at iteration 480 -->
+               value="0.5"/>    <!-- 0.3 is good --> <!-- fraction of iterations where innovative strategies are switched off. if you set it to 0.8 and run from iteration 400 to iteration 500, innovation is switched off at iteration 480 -->
         <param name="planSelectorForRemoval" value="WorstPlanForRemovalSelectorWithConflicts"/>
         <parameterset type="strategysettings">
             <param name="strategyName" value="ReRoute"/>
@@ -53,12 +53,14 @@
         </parameterset>
         <parameterset type="strategysettings">
             <param name="strategyName" value="SelectExpBeta"/>
-            <param name="weight" value="0.80"/>  <!-- it was originally set to 0.75-->
+            <param name="weight" value="1"/>  <!-- it was originally set to 0.75-->
         </parameterset>
-        <parameterset type="strategysettings">
+
+<!--        <parameterset type="strategysettings">
             <param name="strategyName" value="TimeAllocationMutator"/>
-            <param name="weight" value="0.25"/>  <!-- 0.15 is good -->
-        </parameterset>
+            <param name="weight" value="0.25"/>  &lt;!&ndash; 0.15 is good &ndash;&gt;
+        </parameterset>-->
+
         <parameterset type="strategysettings">
             <param name="strategyName" value="ChangeTripMode"/>
             <param name="weight" value="0.5"/>  <!-- 0.5 is good -->
@@ -115,7 +117,7 @@
 
     <module name="eventsManager">        <!-- Config name 'parallelEventHandling' is deprecated, please use 'eventsManager' instead. -->
         <!-- Oskar 2015-12-09, use 1 threads for event handling -->
-        <param name="numberOfThreads" value="22"/>
+        <param name="numberOfThreads" value="1"/>
     </module>
 
     <module name="travelTimeCalculator">
@@ -130,7 +132,7 @@
         <!-- How to deal with congested time bins that have no link entry events. `optimistic' assumes free speed (too optimistic); 'experimental_LastMile' is experimental and probably too pessimistic. -->
         <param name="travelTimeAggregator" value="optimistic"/>
         <!-- The size of the time bin (in sec) into which the link travel times are aggregated for the router -->
-        <param name="travelTimeBinSize" value="7200"/>
+        <param name="travelTimeBinSize" value="600"/>
         <!-- How to deal with link entry times at different positions during the time bin. Currently supported: average, linearinterpolation -->
         <param name="travelTimeGetter" value="average"/>
     </module>
@@ -271,7 +273,7 @@
     <module name="timeAllocationMutator">
         <!--<param name="mutationRange" value="900.0" /> -->
         <!-- Default:true; Defines whether time mutation changes an activity's duration. -->
-        <param name="mutationAffectsDuration" value="true"/> <!--changed-->
+        <param name="mutationAffectsDuration" value="false"/>
     </module>
 
     <module name="roadpricing">
