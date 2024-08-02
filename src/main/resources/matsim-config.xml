@@ -29,7 +29,7 @@
     </module>
 
     <module name="plans">
-        <param name="inputPlansFile" value="./matsim-plans-2040_25b.xml"/>
+        <param name="inputPlansFile" value="./matsim-plans-2040_25_June13.xml"/>
         <parameterset type="strategySettings">
             <param name="ChangeExpBeta" value="0.1"/>
             <param name="beta" value="1.0"/>
@@ -141,6 +141,7 @@
 
 
     <module name="scoring">                    <!-- Config name 'planCalcScore' is deprecated, please use 'scoring' instead. -->
+        <param name="writeExperiencedPlans" value="true"/>
         <parameterset type="scoringParameters">
             <param name="subpopulation" value="null"/>
             <param name="performing" value="6.0"/>
