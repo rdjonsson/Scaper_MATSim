@@ -12,15 +12,15 @@
         },
         {
             "type": "java",
-            "name": "RunMatsim",
+            "name": "SkimMatrices",
             "request": "launch",
             "mainClass": "org.matsim.RunMatsim",
-            "projectName": "matsim-Sthlm-project"
+            "projectName": "matsim-Ume-skim"
         }
     ],
     "java.home":"/usr/lib/jvm/java-17-openjdk-amd64",
     //"java.jdt.ls.java.home": "/usr/lib/jvm/java-17-openjdk-amd64", // Update this path with your JDK location
     "workspaceFolders": [
-        "/home/naqavi/Sthlm-try1"
+        "/home/danjo/scenarios/ume/matsim"
     ]
 }
