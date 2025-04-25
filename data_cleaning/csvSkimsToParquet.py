@@ -5,7 +5,7 @@ import glob
 import pathlib
 import shutil
 
-datadir = "/home/danjo/scenarios/ume/matsim/output/"
+datadir = "/home/danjo/scenarios/ume/matsim/deso_osm/"
 
 flist = [p.name for p in pathlib.Path(datadir).iterdir() if (p.is_file() & p.name.endswith(".gz"))]
 tablenames = [p[0:-7] for p in flist]

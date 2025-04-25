@@ -49,17 +49,17 @@ public class SkimMatrices {
 
     public static void main(String[] args)  throws IOException {
 
-        String zonesShapeFilename = "/home/danjo/scenarios/ume/trv_ume.shp";
+        String zonesShapeFilename = "/home/danjo/scenarios/sthlm/deso_sthlm.shp";
         String zonesIdAttributeName = "ID";
-        String outputDirectory = "/home/danjo/scenarios/ume/matsim/output/";
+        String outputDirectory = "/home/danjo/scenarios/sthlm/matsim/deso_osm/";
         int numberOfThreads = 5;
 
-        String networkFilename = "/home/danjo/scenarios/ume/matsim/ume-matsim-network.xml.gz";
+        String networkFilename = "/home/danjo/scenarios/sthlm/matsim/matsim-network.xml.gz";
         int numberOfPointsPerZone = 3;
         Random r = new Random();
 
-        String transitScheduleFilename = "/home/danjo/scenarios/ume/matsim/transitSchedule.xml.gz";
-        String transitNetworkFilename =  "/home/danjo/scenarios/ume/matsim/transitNetwork.xml.gz";
+        String transitScheduleFilename = "/home/danjo/scenarios/sthlm/matsim/transitSchedule.xml.gz";
+        String transitNetworkFilename =  "/home/danjo/scenarios/sthlm/matsim/transitNetwork.xml.gz";
         Config config = ConfigUtils.createConfig();
 
         double[] mpeak = new double[2];
