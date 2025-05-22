@@ -49,13 +49,13 @@ public class SkimMatrices {
 
     public static void main(String[] args)  throws IOException {
 
-        String zonesShapeFilename = "/home/danjo/scenarios/sthlm/deso_sthlm.shp";
+        String zonesShapeFilename = "/home/danjo/scenarios/sthlm/trv_sthlm.shp";
         String zonesIdAttributeName = "ID";
-        String outputDirectory = "/home/danjo/scenarios/sthlm/matsim/deso_osm/";
-        int numberOfThreads = 5;
+        String outputDirectory = "/home/danjo/scenarios/sthlm/matsim/trv_nvdb/";
+        int numberOfThreads = 25;
 
-        String networkFilename = "/home/danjo/scenarios/sthlm/matsim/matsim-network.xml.gz";
-        int numberOfPointsPerZone = 3;
+        String networkFilename = "/home/danjo/scenarios/sthlm/matsim/sthlm_v3.xml";
+        int numberOfPointsPerZone = 5;
         Random r = new Random();
 
         String transitScheduleFilename = "/home/danjo/scenarios/sthlm/matsim/transitSchedule.xml.gz";
@@ -78,11 +78,11 @@ public class SkimMatrices {
         
         // Morning peak
         skims.calculateAndWriteNetworkMatrices(networkFilename, null, mpeak, config, "mpeak_", l -> true);
-        skims.calculateAndWritePTMatrices(transitNetworkFilename, transitScheduleFilename, mpeak[0], mpeak[1], config, "mpeak_", (line, route) -> route.getTransportMode().equals("train"));
+        //skims.calculateAndWritePTMatrices(transitNetworkFilename, transitScheduleFilename, mpeak[0], mpeak[1], config, "mpeak_", (line, route) -> route.getTransportMode().equals("train"));
 
         // Midday
         skims.calculateAndWriteNetworkMatrices(networkFilename, null, midday, config, "midday_", l -> true);
-        skims.calculateAndWritePTMatrices(transitNetworkFilename, transitScheduleFilename, midday[0], midday[1], config, "midday_", (line, route) -> route.getTransportMode().equals("train"));
+        //skims.calculateAndWritePTMatrices(transitNetworkFilename, transitScheduleFilename, midday[0], midday[1], config, "midday_", (line, route) -> route.getTransportMode().equals("train"));
         
         skims.calculateAndWriteBeelineMatrix();
 

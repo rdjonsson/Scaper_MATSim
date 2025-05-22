@@ -34,6 +34,11 @@ import org.matsim.core.controler.OutputDirectoryHierarchy;
 import org.matsim.core.scenario.ScenarioUtils;
 import org.matsim.core.utils.io.IOUtils;
 
+import ch.sbb.matsim.mobsim.qsim.SBBTransitModule;
+import ch.sbb.matsim.mobsim.qsim.pt.SBBTransitEngineQSimModule;
+import ch.sbb.matsim.routing.pt.raptor.SwissRailRaptorModule;
+
+
 public class RunMatsim {
 
     public static void main(String[] args) {
@@ -83,8 +88,11 @@ public class RunMatsim {
                 RoadPricingSchemeUsingTollFactor stuff = RoadPricingSchemeUsingTollFactor.createAndRegisterRoadPricingSchemeUsingTollFactor(roadpricingUrl, tollFactor, scenario);
                 controler.addOverridingModule( new RoadPricingModule( stuff ) );
             }
+            // To use the deterministic pt simulation (Part 1 of 2):
+            controler.addOverridingModule(new SwissRailRaptorModule());
 
-            //and run
+//           	controler.getConfig().transit().setUseTransit(true);
+//		    controler.getConfig().transit().setUsingTransitInMobsim(true);
             
             controler.run();
         }
