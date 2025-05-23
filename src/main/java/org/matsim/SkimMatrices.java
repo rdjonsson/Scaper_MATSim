@@ -21,12 +21,15 @@ package org.matsim;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.*;
+import java.util.Arrays;
 import java.util.Random;
 import java.util.function.BiPredicate;
 import java.util.function.Predicate;
 
 import org.matsim.api.core.v01.Scenario;
 import org.matsim.api.core.v01.network.Link;
+import org.matsim.api.core.v01.network.Network;
 import org.matsim.contrib.roadpricing.RoadPricingConfigGroup;
 import org.matsim.contrib.roadpricing.RoadPricingModule;
 import org.matsim.contrib.roadpricing.RoadPricingSchemeUsingTollFactor;
@@ -37,13 +40,14 @@ import org.matsim.core.controler.Controler;
 import org.matsim.core.controler.OutputDirectoryHierarchy;
 import org.matsim.core.scenario.ScenarioUtils;
 import org.matsim.core.utils.io.IOUtils;
-
-
+import org.matsim.core.network.NetworkUtils;
+import org.matsim.core.network.io.MatsimNetworkReader;
 import org.matsim.pt.transitSchedule.api.TransitLine;
 import org.matsim.pt.transitSchedule.api.TransitRoute;
 import org.matsim.pt.transitSchedule.api.TransitScheduleReader;
 
 import ch.sbb.matsim.analysis.skims.CalculateSkimMatrices;
+
 
 public class SkimMatrices {
 
@@ -55,6 +59,7 @@ public class SkimMatrices {
         int numberOfThreads = 25;
 
         String networkFilename = "/home/danjo/scenarios/sthlm/matsim/sthlm_v3.xml";
+        String cleanedNetwork =  "/home/danjo/scenarios/sthlm/matsim/matsim-network-clean.xml";
         int numberOfPointsPerZone = 5;
         Random r = new Random();
 
@@ -70,19 +75,27 @@ public class SkimMatrices {
         midday[0] = 39600;
         midday[1] = 43200;
 
+        final Scenario scenario = ScenarioUtils.createScenario(ConfigUtils.createConfig());
+        final Network network = scenario.getNetwork();
+        new MatsimNetworkReader(scenario.getNetwork()).readFile(networkFilename);
+        Set<String> modes = NetworkUtils.getModes(network);
+        NetworkUtils.cleanNetwork(network, modes);
+        NetworkUtils.writeNetwork(network, cleanedNetwork);
+        
+        
         CalculateSkimMatrices skims = new CalculateSkimMatrices(outputDirectory, numberOfThreads);
         //skims.calculateSamplingPointsPerZoneFromFacilities(facilitiesFilename, numberOfPointsPerZone, r, facility -> 1.0);
         // alternative if you don't have facilities:
-        skims.calculateSamplingPointsPerZoneFromNetwork(networkFilename, numberOfPointsPerZone,zonesShapeFilename,zonesIdAttributeName, r);
+        skims.calculateSamplingPointsPerZoneFromNetwork(cleanedNetwork, numberOfPointsPerZone,zonesShapeFilename,zonesIdAttributeName, r);
         
         
         // Morning peak
-        skims.calculateAndWriteNetworkMatrices(networkFilename, null, mpeak, config, "mpeak_", l -> true);
-        //skims.calculateAndWritePTMatrices(transitNetworkFilename, transitScheduleFilename, mpeak[0], mpeak[1], config, "mpeak_", (line, route) -> route.getTransportMode().equals("train"));
+        skims.calculateAndWriteNetworkMatrices(cleanedNetwork, null, mpeak, config, "mpeak_", l -> true);
+        skims.calculateAndWritePTMatrices(transitNetworkFilename, transitScheduleFilename, mpeak[0], mpeak[1], config, "mpeak_", (line, route) -> route.getTransportMode().equals("train"));
 
         // Midday
-        skims.calculateAndWriteNetworkMatrices(networkFilename, null, midday, config, "midday_", l -> true);
-        //skims.calculateAndWritePTMatrices(transitNetworkFilename, transitScheduleFilename, midday[0], midday[1], config, "midday_", (line, route) -> route.getTransportMode().equals("train"));
+        skims.calculateAndWriteNetworkMatrices(cleanedNetwork, null, midday, config, "midday_", l -> true);
+        skims.calculateAndWritePTMatrices(transitNetworkFilename, transitScheduleFilename, midday[0], midday[1], config, "midday_", (line, route) -> route.getTransportMode().equals("train"));
         
         skims.calculateAndWriteBeelineMatrix();
 
