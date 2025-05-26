@@ -53,8 +53,8 @@ public class RunMatsim {
             config.controller().setOverwriteFileSetting((OutputDirectoryHierarchy.OverwriteFileSetting.deleteDirectoryIfExists));
 
             var configDir = Paths.get(args[0]).getParent();
-
-            var cordonFile = Paths.get(configDir.toString(), "cordonToll1.xml");
+            
+            var cordonFile = Paths.get(configDir.toString(), "cordonToll.xml");
 
             System.out.println("Cordon file: " + cordonFile.toString());
 
@@ -68,7 +68,7 @@ public class RunMatsim {
             {
                 //add RoadPricing ConfigGroup
                 RoadPricingConfigGroup rpConfig = ConfigUtils.addOrGetModule(config, RoadPricingConfigGroup.class);
-                rpConfig.setTollLinksFile("cordonToll1.xml");
+                rpConfig.setTollLinksFile("cordonToll.xml");
 
 
                 // define the toll factor as an anonymous class.  If more flexibility is needed, convert to "full" class.
