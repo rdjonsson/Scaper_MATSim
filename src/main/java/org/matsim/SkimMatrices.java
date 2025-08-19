@@ -22,8 +22,6 @@ package org.matsim;
 import java.io.IOException;
 import java.net.URL;
 import java.util.*;
-import java.util.Arrays;
-import java.util.Random;
 import java.util.function.BiPredicate;
 import java.util.function.Predicate;
 
@@ -45,34 +43,34 @@ import org.matsim.core.network.io.MatsimNetworkReader;
 import org.matsim.pt.transitSchedule.api.TransitLine;
 import org.matsim.pt.transitSchedule.api.TransitRoute;
 import org.matsim.pt.transitSchedule.api.TransitScheduleReader;
+import org.matsim.utils.gis.matsim2esri.network.Links2ESRIShape;
 
 import ch.sbb.matsim.analysis.skims.CalculateSkimMatrices;
-
 
 public class SkimMatrices {
 
     public static void main(String[] args)  throws IOException {
 
-        String zonesShapeFilename = "/home/danjo/scenarios/sthlm/trv_sthlm.shp";
+        String zonesShapeFilename = "/home/danjo/scenarios/ume/deso_ume.shp";
         String zonesIdAttributeName = "ID";
-        String outputDirectory = "/home/danjo/scenarios/sthlm/matsim/trv_nvdb/";
+        String outputDirectory = "/home/danjo/scenarios/ume/matsim/deso_nvdb/";
         int numberOfThreads = 25;
 
-        String networkFilename = "/home/danjo/scenarios/sthlm/matsim/sthlm_v3.xml";
-        String cleanedNetwork =  "/home/danjo/scenarios/sthlm/matsim/matsim-network-clean.xml";
+        String networkFilename = "/home/danjo/scenarios/ume/matsim/ume_v2.xml";
+        String cleanedNetwork =  "/home/danjo/scenarios/ume/matsim/matsim-network-clean-v2.xml";
         int numberOfPointsPerZone = 5;
         Random r = new Random();
 
-        String transitScheduleFilename = "/home/danjo/scenarios/sthlm/matsim/transitSchedule.xml.gz";
-        String transitNetworkFilename =  "/home/danjo/scenarios/sthlm/matsim/transitNetwork.xml.gz";
+        String transitScheduleFilename = "/home/danjo/scenarios/ume/matsim/transitSchedule.xml.gz";
+        String transitNetworkFilename =  "/home/danjo/scenarios/ume/matsim/transitNetwork.xml.gz";
         Config config = ConfigUtils.createConfig();
 
         double[] mpeak = new double[2];
-        mpeak[0] = 28800;
+        mpeak[0] = 27000;
         mpeak[1] = 32400;
 
         double[] midday = new double[2];   
-        midday[0] = 39600;
+        midday[0] = 37800;
         midday[1] = 43200;
 
         final Scenario scenario = ScenarioUtils.createScenario(ConfigUtils.createConfig());
@@ -99,6 +97,10 @@ public class SkimMatrices {
         
         skims.calculateAndWriteBeelineMatrix();
 
+        final Scenario scenario2 = ScenarioUtils.createScenario(ConfigUtils.createConfig());
+        final Network transitnet = scenario2.getNetwork();
+        new MatsimNetworkReader(scenario2.getNetwork()).readFile(transitNetworkFilename);
 
+        new Links2ESRIShape(transitnet, "/home/danjo/scenarios/ume/matsim/transitNetwork.shp", "EPSG:3006").write();
     }
 }
