@@ -89,7 +89,7 @@ public class RunMatsim {
                 controler.addOverridingModule( new RoadPricingModule( stuff ) );
             }
             // To use the deterministic pt simulation (Part 1 of 2):
-            controler.addOverridingModule(new SwissRailRaptorModule());
+            //controler.addOverridingModule(new SwissRailRaptorModule());
 
 //           	controler.getConfig().transit().setUseTransit(true);
 //		    controler.getConfig().transit().setUsingTransitInMobsim(true);
