@@ -41,56 +41,55 @@ import ch.sbb.matsim.routing.pt.raptor.SwissRailRaptorModule;
 
 public class RunMatsim {
 
-    public static void Run(String matsimConfigFile) {
+    public static void Simulate(String matsimConfigFile) {
+
+        Config config;
+        config = ConfigUtils.loadConfig(matsimConfigFile);
+
+        config.controller().setOverwriteFileSetting((OutputDirectoryHierarchy.OverwriteFileSetting.deleteDirectoryIfExists));
+
+        var configDir = Paths.get(matsimConfigFile).getParent();
+        
+        var cordonFile = Paths.get(configDir.toString(), "cordonToll.xml");
+
+        System.out.println("Cordon file: " + cordonFile.toString());
+
+        var runRoadPricing = Files.exists(cordonFile);
+
+        //load config into scenario
+        final Scenario scenario = ScenarioUtils.loadScenario(config);
+        Controler controler = new Controler(scenario);
+
+        if(runRoadPricing)
+        {
+            //add RoadPricing ConfigGroup
+            RoadPricingConfigGroup rpConfig = ConfigUtils.addOrGetModule(config, RoadPricingConfigGroup.class);
+            rpConfig.setTollLinksFile("cordonToll.xml");
 
 
-            config = ConfigUtils.loadConfig(args);
-
-            config.controller().setOverwriteFileSetting((OutputDirectoryHierarchy.OverwriteFileSetting.deleteDirectoryIfExists));
-
-            var configDir = Paths.get(args[0]).getParent();
-            
-            var cordonFile = Paths.get(configDir.toString(), "cordonToll.xml");
-
-            System.out.println("Cordon file: " + cordonFile.toString());
-
-            var runRoadPricing = Files.exists(cordonFile);
-
-            //load config into scenario
-            final Scenario scenario = ScenarioUtils.loadScenario(config);
-            Controler controler = new Controler(scenario);
-
-            if(runRoadPricing)
-            {
-                //add RoadPricing ConfigGroup
-                RoadPricingConfigGroup rpConfig = ConfigUtils.addOrGetModule(config, RoadPricingConfigGroup.class);
-                rpConfig.setTollLinksFile("cordonToll.xml");
-
-
-                // define the toll factor as an anonymous class.  If more flexibility is needed, convert to "full" class.
-                TollFactor tollFactor = (personId, vehicleId, linkId, time) -> {
-                    if(scenario.getVehicles().getVehicles().get(vehicleId) == null){
+            // define the toll factor as an anonymous class.  If more flexibility is needed, convert to "full" class.
+            TollFactor tollFactor = (personId, vehicleId, linkId, time) -> {
+                if(scenario.getVehicles().getVehicles().get(vehicleId) == null){
+                    return 0;
+                    } else if (scenario.getVehicles().getVehicles().get(vehicleId).getType().getNetworkMode().equals("car")) {
+                        return 1;
+                    } else {
                         return 0;
-                        } else if (scenario.getVehicles().getVehicles().get(vehicleId).getType().getNetworkMode().equals("car")) {
-                            return 1;
-                        } else {
-                            return 0;
-                        }
-                    };
+                    }
+                };
 
-                // instantiate the road pricing scheme, with the toll factor inserted:
-                URL roadpricingUrl;
-                roadpricingUrl = IOUtils.extendUrl(config.getContext(), rpConfig.getTollLinksFile());
-                RoadPricingSchemeUsingTollFactor stuff = RoadPricingSchemeUsingTollFactor.createAndRegisterRoadPricingSchemeUsingTollFactor(roadpricingUrl, tollFactor, scenario);
-                controler.addOverridingModule( new RoadPricingModule( stuff ) );
-            }
-            // To use the deterministic pt simulation (Part 1 of 2):
-            //controler.addOverridingModule(new SwissRailRaptorModule());
+            // instantiate the road pricing scheme, with the toll factor inserted:
+            URL roadpricingUrl;
+            roadpricingUrl = IOUtils.extendUrl(config.getContext(), rpConfig.getTollLinksFile());
+            RoadPricingSchemeUsingTollFactor stuff = RoadPricingSchemeUsingTollFactor.createAndRegisterRoadPricingSchemeUsingTollFactor(roadpricingUrl, tollFactor, scenario);
+            controler.addOverridingModule( new RoadPricingModule( stuff ) );
+        }
+        // To use the deterministic pt simulation (Part 1 of 2):
+        //controler.addOverridingModule(new SwissRailRaptorModule());
 
 //           	controler.getConfig().transit().setUseTransit(true);
 //		    controler.getConfig().transit().setUsingTransitInMobsim(true);
-            
-            controler.run();
-        }
+        
+        controler.run();
     }
 }

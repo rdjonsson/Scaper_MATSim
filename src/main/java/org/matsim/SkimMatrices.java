@@ -20,30 +20,23 @@ package org.matsim;
 
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.*;
-import java.util.function.BiPredicate;
-import java.util.function.Predicate;
+
 
 import org.matsim.api.core.v01.Scenario;
-import org.matsim.api.core.v01.network.Link;
 import org.matsim.api.core.v01.network.Network;
-import org.matsim.contrib.roadpricing.RoadPricingConfigGroup;
-import org.matsim.contrib.roadpricing.RoadPricingModule;
-import org.matsim.contrib.roadpricing.RoadPricingSchemeUsingTollFactor;
-import org.matsim.contrib.roadpricing.TollFactor;
 import org.matsim.core.config.Config;
 import org.matsim.core.config.ConfigUtils;
-import org.matsim.core.controler.Controler;
-import org.matsim.core.controler.OutputDirectoryHierarchy;
 import org.matsim.core.scenario.ScenarioUtils;
-import org.matsim.core.utils.io.IOUtils;
 import org.matsim.core.network.NetworkUtils;
 import org.matsim.core.network.io.MatsimNetworkReader;
-import org.matsim.pt.transitSchedule.api.TransitLine;
-import org.matsim.pt.transitSchedule.api.TransitRoute;
-import org.matsim.pt.transitSchedule.api.TransitScheduleReader;
 import org.matsim.utils.gis.matsim2esri.network.Links2ESRIShape;
+
+import org.yaml.snakeyaml.*;
 
 import ch.sbb.matsim.analysis.skims.CalculateSkimMatrices;
 
@@ -51,20 +44,24 @@ public class SkimMatrices {
 
     public static void Run(String configYaml)  throws IOException {
 
+        Yaml yaml = new Yaml();
+        InputStream inputStream = Files.newInputStream(Paths.get(configYaml));
+        
+        Map<String, Object> conf = yaml.load(inputStream);
+        System.out.println(conf);
 
+        String zonesShapeFilename = (String)conf.get("zonesShapeFilename");
+        String zonesIdAttributeName = (String)conf.get("zonesIdAttributeName");
+        String outputDirectory = (String)conf.get("outputDirectory");
+        int numberOfThreads = (int)conf.get("numberOfThreads");
 
-        String zonesShapeFilename = args[0]; // "/home/danjo/scenarios/ume/deso_ume.shp";
-        String zonesIdAttributeName = args[1]; // "ID";
-        String outputDirectory = args[2]; // "/home/danjo/scenarios/ume/matsim/deso_nvdb/";
-        int numberOfThreads = 25;
-
-        String networkFilename = "/home/danjo/scenarios/ume/matsim/ume_v2.xml";
-        String cleanedNetwork =  "/home/danjo/scenarios/ume/matsim/matsim-network-clean-v2.xml";
+        String networkFilename = (String)conf.get("networkFilename");
+        String cleanedNetwork =  (String)conf.get("cleanedNetwork");
         int numberOfPointsPerZone = 5;
         Random r = new Random();
 
-        String transitScheduleFilename = "/home/danjo/scenarios/ume/matsim/transitSchedule.xml.gz";
-        String transitNetworkFilename =  "/home/danjo/scenarios/ume/matsim/transitNetwork.xml.gz";
+        String transitScheduleFilename = (String)conf.get("transitScheduleFilename");
+        String transitNetworkFilename =  (String)conf.get("transitNetworkFilename");
         Config config = ConfigUtils.createConfig();
 
         double[] mpeak = new double[2];
