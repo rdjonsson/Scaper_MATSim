@@ -1,4 +1,28 @@
 # Simulation of Stockholm's agents using MATSim
+
+## Prerequisites
+This project was built and run with the following java version:
+```bash
+openjdk 21.0.7 2025-04-15 LTS
+OpenJDK Runtime Environment Temurin-21.0.7+6 (build 21.0.7+6-LTS)
+OpenJDK 64-Bit Server VM Temurin-21.0.7+6 (build 21.0.7+6-LTS, mixed mode, sharing)
+```
+
+Install 
+```bash
+pip install -r path/to/requirements.txt
+```
+
+## Other useful things
+
+If you have installed new dependencies in the Python virtual environment (using e.g pip install) Export changes using
+```bash
+pip freeze > requirements.txt
+```
+
+
+
+## Old info [remove]
 MATSim files are located in the folder named src.
 This simulation includes two branches for:
 ### main 

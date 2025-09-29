@@ -49,11 +49,13 @@ import ch.sbb.matsim.analysis.skims.CalculateSkimMatrices;
 
 public class SkimMatrices {
 
-    public static void main(String[] args)  throws IOException {
+    public static void Run(String configYaml)  throws IOException {
 
-        String zonesShapeFilename = "/home/danjo/scenarios/ume/deso_ume.shp";
-        String zonesIdAttributeName = "ID";
-        String outputDirectory = "/home/danjo/scenarios/ume/matsim/deso_nvdb/";
+
+
+        String zonesShapeFilename = args[0]; // "/home/danjo/scenarios/ume/deso_ume.shp";
+        String zonesIdAttributeName = args[1]; // "ID";
+        String outputDirectory = args[2]; // "/home/danjo/scenarios/ume/matsim/deso_nvdb/";
         int numberOfThreads = 25;
 
         String networkFilename = "/home/danjo/scenarios/ume/matsim/ume_v2.xml";

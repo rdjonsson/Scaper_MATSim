@@ -41,13 +41,9 @@ import ch.sbb.matsim.routing.pt.raptor.SwissRailRaptorModule;
 
 public class RunMatsim {
 
-    public static void main(String[] args) {
+    public static void Run(String matsimConfigFile) {
 
-        Config config;
-        if (args == null || args.length == 0 || args[0] == null) {
-            System.out.println("Proper Usage is: java [options, jar file] org.matsim.RunMatsim /path/to/config.xml");
-            System.exit(0);
-        } else {
+
             config = ConfigUtils.loadConfig(args);
 
             config.controller().setOverwriteFileSetting((OutputDirectoryHierarchy.OverwriteFileSetting.deleteDirectoryIfExists));
